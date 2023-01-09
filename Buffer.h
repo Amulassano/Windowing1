@@ -1,6 +1,3 @@
-#ifndef ALLENAMENTO_ALTERAZIONEBUFFER_H
-#define ALLENAMENTO_ALTERAZIONEBUFFER_H
-
 #define MM 3
 typedef struct List *list;
 typedef struct  node *link;
@@ -35,5 +32,3 @@ list x;
 void allocaBuffer(int ts);
 void addToBuffer(int e, int ts, int l);
 
-
-#endif //ALLENAMENTO_ALTERAZIONEBUFFER_H
