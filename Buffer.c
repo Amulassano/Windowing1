@@ -1,4 +1,4 @@
-#include "AlterazioneBuffer.h"
+#include "Buffer.h"
 #include <stdlib.h>
 #include <math.h>
 
