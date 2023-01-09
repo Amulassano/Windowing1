@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "AlterazioneBuffer.h"
+#include "Buffer.h"
 
 int slide = 5; //scelgo un slide per le finestre
 int width = 10; //scelgo una larghezza per le finestre
