@@ -2,12 +2,10 @@
 #include <stdlib.h>
 #include <math.h>
 #include "AlterazioneBuffer.h"
-#include <time.h>
 
-int slide = 2; //scelgo un slide per le finestre
-int width = 2; //scelgo una larghezza per le finestre
+int slide = 5; //scelgo un slide per le finestre
+int width = 10; //scelgo una larghezza per le finestre
 int tprev = 0; //previous time
-double tot = 0.0;
 
 link newNode( int o,int c){ // mi crea un nuovo nodo nella lista
     link p = malloc(sizeof *p);
@@ -173,90 +171,37 @@ void compute(link h, int **content){ //stampa il content
 
 void windowing(int e, int ts){
     int l;
-    FILE *f = fopen("micro.txt","a");
-
-    double time_spent = 0.0;
-    double time_spent2 = 0.0;
-
-    fprintf(f,"ts = %d\n",ts);
-
-    clock_t beg;
-    clock_t dne;
-
-    clock_t begin = clock();
 
     allocaBuffer(ts); //alloco il buffer
 
-    clock_t end = clock();
-
-    // calcola il tempo trascorso trovando la differenza (end - begin) e
-    // dividendo la differenza per CLOCKS_PER_SEC per convertire in secondi
-    time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
-
-    fprintf(f,"The allocaBuffer time is %f seconds\n", time_spent);
-
     if (ts>=tprev) {
-        time_spent=0.0;
-        begin = clock();
 
         l = scope(ts); //trovo l'indice della finestra in cui mettere il content
 
-        end = clock();
-        tot+= time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
-        fprintf(f,"The scope time is %f seconds\n", time_spent);
-        time_spent=0.0;
-        begin = clock();
-
         addToBuffer(e, ts, l); //aggiungo il content
-        end = clock();
-        tot+= time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
-        fprintf(f,"The addToBuffer time is %f seconds\n", time_spent);
-        time_spent=0.0;
-        begin = clock();
 
         if (tick(tprev, ts) && chooseIfSkip(ts)==1) {
-            end = clock();
-            tot+= time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
-            fprintf(f,"The tick time is %f seconds\n", time_spent);
-            time_spent=0.0;
-            begin = clock();
             int k = x->N;
-            if (x->N >
-                x->M) { //due casi: N>M -> posso iterare nella tabella tranquillamente, N<M significa che la prima finestra ha sede in M e l'ultima in N e dunque per iterare la tabella servono due diversi cicli: il primo fino all'ampiezza massima e il secondo che parte da zero e arriva ad N
-
+            if (x->N > x->M) { //due casi: N>M -> posso iterare nella tabella tranquillamente, N<M significa che la prima finestra ha sede in M e l'ultima in N e dunque per iterare la tabella servono due diversi cicli: il primo fino all'ampiezza massima e il secondo che parte da zero e arriva ad N
                 for (int i = x->M; i < k; i++) {
                     if (active(x->head[i]->w, ts)) {
                         int **cont;
-                        begin = clock();
                         extractData(x->head[i], &cont);
-                        end = clock();
-                        tot+=time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
-
                         if (report(x->head[i]->w, ts)) {
                             compute(x->head[i], cont);
                         }
                     }
                 }
-                fprintf(f,"The extractData time is %f seconds\n", time_spent);
-                time_spent=0.0;
-                begin = clock();
                 for (int i = x->M; i < k; i++) {
                     if (x->head[i]->w.c <= ts) {
                         evictWindow(ts, i);
                     }
                 }
-                end = clock();
-                tot+=time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
-                fprintf(f,"The evictWindow time is %f seconds\n", time_spent);
             } else {
-
                 for (int i = x->M; i < MM; i++) { //primo ciclo
                     if (active(x->head[i]->w, ts)) {
                         int **cont;
-                        begin = clock();
                         extractData(x->head[i], &cont);
-                        end = clock();
-                        tot+=time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
                         if (report(x->head[i]->w, ts)) {
                             compute(x->head[i], cont);
                         }
@@ -264,40 +209,27 @@ void windowing(int e, int ts){
                 }
                 for (int i = x->M; i < MM; i++) {
                     if (x->head[i]->w.c <= ts) {
-                        beg = clock();
                         evictWindow(ts, i);
-                        dne = clock();
-                        tot+=time_spent2+= (double)(end - begin) / CLOCKS_PER_SEC;
                     }
                 }
                 if (k != 0) { //secondo ciclo
                     for (int i = 0; i < k; i++) {
                         if (active(x->head[i]->w, ts)) {
                             int **cont;
-                            begin = clock();
                             extractData(x->head[i], &cont);
-                            end = clock();
-                            tot+=time_spent += (double)(end - begin) / CLOCKS_PER_SEC;
                             if (report(x->head[i]->w, ts)) {
                                 compute(x->head[i], cont);
                             }
                         }
                     }
-                    fprintf(f,"The extractData time is %f seconds\n", time_spent);
                     for (int i = 0; i < k; i++) {
                         if (x->head[i]->w.c <= ts) {
-                            beg = clock();
                             evictWindow(ts, i);
-                            dne = clock();
-                            tot+=time_spent2+= (double)(end - begin) / CLOCKS_PER_SEC;
                         }
                     }
-                    fprintf(f,"The evictWindow time is %f seconds\n", time_spent2);
                 }
             }
         }
         tprev = ts;
     }
-    fprintf(f,"tot time: %f\n",tot);
-    fclose(f);
 }
