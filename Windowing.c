@@ -43,7 +43,7 @@ void TakeAllOff(int pos){
     x->head = malloc(MM*(sizeof (x->head)));
 }
 
-int chooseIfSkip(ts){
+int chooseIfSkip(int ts){
     int l = (int)ceil((double)(ts-x->c)/(double)slide);
     int last = giveMeLast();
     if (l-last<MM)
