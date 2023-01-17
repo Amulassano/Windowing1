@@ -16,7 +16,7 @@ void allocaBuffer(int ts){ //alloca il Buffer, che inizialmente sarà vuoto e du
     }
 }
 
-void addToBuffer(int e, int ts, int l){ //aggiunge al Buffer
+void addToBuffer(char e[String_Lenght], int ts, int l){ //aggiunge al Buffer
     if (x->M>x->N){ //nel momento in cui N riparte da 0
         while (l<MM) {
             if (ts != x->head[l]->w.c) {
@@ -30,7 +30,8 @@ void addToBuffer(int e, int ts, int l){ //aggiunge al Buffer
                     x->head[l]->c = realloc(x->head[l]->c, (x->head[l]->nc) * (sizeof(*x->head[l]->c)));
 
                 }
-                x->head[l]->c[x->head[l]->nc - 1].e = e; //p->[n][0] indica l'ennesimo content di quella finestra
+                for (int t=0;t<String_Lenght;t++)
+                    x->head[l]->c[x->head[l]->nc - 1].e[t] = e[t]; //p->[n][0] indica l'ennesimo content di quella finestra
                 x->head[l]->c[x->head[l]->nc - 1].ts = ts;//p->[n][1] indica l'ennesimo timestamp di quella finestra
             }l++;
         }
@@ -44,7 +45,8 @@ void addToBuffer(int e, int ts, int l){ //aggiunge al Buffer
                 } else { //se è già presente del contenuto aumento lo spazio dell'allocazione dinamica
                     x->head[l]->c = realloc(x->head[l]->c, (x->head[l]->nc) * (sizeof(*x->head[l]->c)));
                 }
-                x->head[l]->c[x->head[l]->nc - 1].e = e; //p->[n][0] indica l'ennesimo content di quella finestra
+                for (int t=0;t<String_Lenght;t++)
+                    x->head[l]->c[x->head[l]->nc - 1].e[t] = e[t]; //p->[n][0] indica l'ennesimo content di quella finestra
                 x->head[l]->c[x->head[l]->nc - 1].ts = ts;//p->[n][1] indica l'ennesimo timestamp di quella finestra
             }l++;
 
@@ -60,7 +62,8 @@ void addToBuffer(int e, int ts, int l){ //aggiunge al Buffer
                 } else { //se è già presente del contenuto aumento lo spazio dell'allocazione dinamica
                     x->head[l]->c = realloc(x->head[l]->c, (x->head[l]->nc) * (sizeof(*x->head[l]->c)));
                 }
-                x->head[l]->c[x->head[l]->nc - 1].e = e; //p->[n][0] indica l'ennesimo content di quella finestra
+                for (int t=0;t<String_Lenght;t++)
+                    x->head[l]->c[x->head[l]->nc - 1].e[t] = e[t]; //p->[n][0] indica l'ennesimo content di quella finestra
                 x->head[l]->c[x->head[l]->nc - 1].ts = ts;//p->[n][1] indica l'ennesimo timestamp di quella finestra
             }l++;
         }
