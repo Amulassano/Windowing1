@@ -3,7 +3,7 @@
 #include <math.h>
 #include "Buffer.h"
 
-int slide = 5; //scelgo un slide per le finestre
+int slide = 2; //scelgo un slide per le finestre
 int width = 10; //scelgo una larghezza per le finestre
 int tprev = 0; //previous time
 
@@ -78,11 +78,11 @@ int scope(int ts){ //funzione scope, ritorna posizione esatta di dove inserire (
             //calcola le nuove finestre e le aggiunge a quelle già presenti
 
             if (x->N == 0) {
-                o = x->head[MM - 1]->w.o + width;
+                o = x->head[MM - 1]->w.o + slide;
                 i = 0;
             } else {
                 i = x->N;
-                o = x->head[x->N - 1]->w.o + width;
+                o = x->head[x->N - 1]->w.o + slide;
             }
             if (o <= ts) {
                 while (o <= ts) {
