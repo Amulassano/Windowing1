@@ -7,6 +7,11 @@ int slide = 2; //scelgo un slide per le finestre
 int width = 10; //scelgo una larghezza per le finestre
 int tprev = 0; //previous time
 
+typedef struct{ //Data interface type
+    char e[String_Lenght];
+    int ts;
+}data;
+
 link newNode( int o,int c){ // mi crea un nuovo nodo nella lista
     link p = malloc(sizeof *p);
     p->w.c = c; //c = chiusura della finestra
@@ -130,16 +135,13 @@ int tick(int tau, int ts){ //funzione tick: ritorna 1 ( ovvero TRUE ) se il time
     return 0;
 }
 
-void extractData(link h,int ***cont){ //mi estrae un vettore di content (e,ts)
-    int **p;
+void extractData(link h,data *cont){ //mi estrae un vettore di content (e,ts)
     if (h->nc!=0) {
-        p = malloc(h->nc * (sizeof(int *)));
         for (int i = 0; i < h->nc;i++){
-            p[i] = malloc(2*(sizeof (int)));
-            p[i][0] = h->c[i].e; //estraggo l'elemento
-            p[i][1] = h->c[i].ts; //estraggo il relativo timestamp
+            for (int t=0;t<String_Lenght;t++)
+                cont[i].e[t] = h->c[i].e[t]; //estraggo l'elemento
+            cont[i].ts = h->c[i].ts; //estraggo il relativo timestamp
         }
-        *cont=p;
     }
     else
         return ;
@@ -157,19 +159,19 @@ int report(window w, int ts){ //report: window_close ( restituisce ( TRUE ) se t
     return 0;
 }
 
-void compute(link h, int **content){ //stampa il content
+void compute(link h, data *content){ //stampa il content
     FILE *fp;
     fp = fopen("log.txt","a");
     if (h->nc>0) { //se è presente del content
         fprintf(fp,"%d, %d, %d",tprev,h->w.o,h->w.c);
         for (int i = 0; i < h->nc; i++)
-            fprintf(fp,", < %d, %d >", content[i][0], content[i][1]);
+            fprintf(fp,", < %s, %d >", content[i].e, content[i].ts);
         fprintf(fp,"\n");
     }
     fclose(fp);
 }
 
-void windowing(int e, int ts){
+void windowing(char e[String_Lenght], int ts){
     int l;
 
     allocaBuffer(ts); //alloco il buffer
@@ -185,8 +187,8 @@ void windowing(int e, int ts){
             if (x->N > x->M) { //due casi: N>M -> posso iterare nella tabella tranquillamente, N<M significa che la prima finestra ha sede in M e l'ultima in N e dunque per iterare la tabella servono due diversi cicli: il primo fino all'ampiezza massima e il secondo che parte da zero e arriva ad N
                 for (int i = x->M; i < k; i++) {
                     if (active(x->head[i]->w, ts)) {
-                        int **cont;
-                        extractData(x->head[i], &cont);
+                        data *cont=malloc(x->head[i]->nc * (sizeof(data)));
+                        extractData(x->head[i], cont);
                         if (report(x->head[i]->w, ts)) {
                             compute(x->head[i], cont);
                         }
@@ -200,8 +202,8 @@ void windowing(int e, int ts){
             } else {
                 for (int i = x->M; i < MM; i++) { //primo ciclo
                     if (active(x->head[i]->w, ts)) {
-                        int **cont;
-                        extractData(x->head[i], &cont);
+                        data *cont=malloc(x->head[i]->nc * (sizeof(data)));
+                        extractData(x->head[i], cont);
                         if (report(x->head[i]->w, ts)) {
                             compute(x->head[i], cont);
                         }
@@ -215,8 +217,8 @@ void windowing(int e, int ts){
                 if (k != 0) { //secondo ciclo
                     for (int i = 0; i < k; i++) {
                         if (active(x->head[i]->w, ts)) {
-                            int **cont;
-                            extractData(x->head[i], &cont);
+                            data *cont=malloc(x->head[i]->nc * (sizeof(data)));
+                            extractData(x->head[i], cont);
                             if (report(x->head[i]->w, ts)) {
                                 compute(x->head[i], cont);
                             }
