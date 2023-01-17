@@ -4,7 +4,7 @@ The windowing function is based on [SECRET](https://people.csail.mit.edu/tatbul/
 ## Hash Table
 ### Structure
 It's a dynamic table based on a given dimension that can be selected by the programmer and it's a constant that never changes.<br>
-Inside the table every row is a dynamic vector in which there is a key, that is a window [ opening, closure ), and the content; the content is a dynamic vector that owns a tuble in which there is the element and his timestamp.
+Inside the table every row is a dynamic vector in which there is a key, that is a window [ opening, closure ), and the content; the content is a dynamic vector that owns a tuple in which there is the element and his timestamp.
 
 ### How does it work?
 Every row of the table is accessible via an indicator computed by scope function, in which thanks to the timestamp we can know 
