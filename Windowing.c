@@ -173,6 +173,7 @@ void compute(link h, data *content){ //stampa il content
 
 void windowing(char e[String_Lenght], int ts){
     int l;
+    data *cont = NULL;
 
     allocaBuffer(ts); //alloco il buffer
 
@@ -187,11 +188,12 @@ void windowing(char e[String_Lenght], int ts){
             if (x->N > x->M) { //due casi: N>M -> posso iterare nella tabella tranquillamente, N<M significa che la prima finestra ha sede in M e l'ultima in N e dunque per iterare la tabella servono due diversi cicli: il primo fino all'ampiezza massima e il secondo che parte da zero e arriva ad N
                 for (int i = x->M; i < k; i++) {
                     if (active(x->head[i]->w, ts)) {
-                        data *cont=malloc(x->head[i]->nc * (sizeof(data)));
+                        cont=malloc(x->head[i]->nc * (sizeof(data)));
                         extractData(x->head[i], cont);
                         if (report(x->head[i]->w, ts)) {
                             compute(x->head[i], cont);
                         }
+                        free(cont);
                     }
                 }
                 for (int i = x->M; i < k; i++) {
@@ -202,11 +204,12 @@ void windowing(char e[String_Lenght], int ts){
             } else {
                 for (int i = x->M; i < MM; i++) { //primo ciclo
                     if (active(x->head[i]->w, ts)) {
-                        data *cont=malloc(x->head[i]->nc * (sizeof(data)));
+                        cont=malloc(x->head[i]->nc * (sizeof(data)));
                         extractData(x->head[i], cont);
                         if (report(x->head[i]->w, ts)) {
                             compute(x->head[i], cont);
                         }
+                        free(cont);
                     }
                 }
                 for (int i = x->M; i < MM; i++) {
@@ -217,11 +220,12 @@ void windowing(char e[String_Lenght], int ts){
                 if (k != 0) { //secondo ciclo
                     for (int i = 0; i < k; i++) {
                         if (active(x->head[i]->w, ts)) {
-                            data *cont=malloc(x->head[i]->nc * (sizeof(data)));
+                            cont=malloc(x->head[i]->nc * (sizeof(data)));
                             extractData(x->head[i], cont);
                             if (report(x->head[i]->w, ts)) {
                                 compute(x->head[i], cont);
                             }
+                            free(cont);
                         }
                     }
                     for (int i = 0; i < k; i++) {
