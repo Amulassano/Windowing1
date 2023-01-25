@@ -1,5 +1,5 @@
 #include "AlterazioneBuffer.h"
 
-void windowing(int e, int ts);
+void windowing(char e[String_Lenght], int ts);
 
 
