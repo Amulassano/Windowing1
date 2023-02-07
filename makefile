@@ -1,14 +1,14 @@
-Windowing: main.o Windowing.o Buffer.o
-	gcc main.o -o Windowing
+AlterazioneWindowing: main.o AlterazioneWindowing.o AlterazioneBuffer.o
+	gcc main.o -o AlterazioneWindowing
 
-main.o: main.c Windowing.h
+main.o: main.c AlterazioneWindowing.h
 	gcc -c main.c
 
-Windowing.o: Windowing.c Buffer.h Windowing.h
-	gcc -c Windowing.c
+AlterazioneWindowing.o: AlterazioneWindowing.c AlterazioneBuffer.h AlterazioneWindowing.h
+	gcc -c AlterazioneWindowing.c
 	
-Buffer.o: Buffer.c Buffer.h
-	gcc -c Buffer.c
+AlterazioneBuffer.o: AlterazioneBuffer.c AlterazioneBuffer.h
+	gcc -c AlterazioneBuffer.c
 	
 clean:
-	rm *.o Windowing
+	rm *.o AlterazioneWindowing
